@@ -1,48 +1,34 @@
 const express= require('express');
 const router= express.Router()
 const StudentModel= require('../models/students_model')
+
 router.route('')
 .get(async (req, res)=>{
-    const result= await StudentModel.find()
-    if(result.length>0){
-        res.send(result)
-
+    if(req.user.role == 'admin'){
+        const result= await StudentModel.find()
+        if(result.length>0){
+            res.send(result)
+    
+        }
+        else{
+            res.status(404).send('No Students in the database')
+        }
     }
     else{
-        res.status(404).send('No Students in the database')
+        res.status(403).send('Only admins are allowed')
     }
+    
  })
 .post(async(req, res)=>{
-    const result= await StudentModel(req.body).save()
-    res.send(result)
-})
-
-router.route('/:id')
-.get(async (req, res)=>{
-    const result= await StudentModel.find({"id": req.params.id})
-    if(result.length ==0){
-        res.status(404).send('No Student with this ID')
+    if(req.user.role == 'admin'){
+        const result= await StudentModel(req.body).save()
+        res.send(result)
     }
     else{
-        res.send(result)
+        res.status(403).send('Only admins are allowed')
     }
- })
-.put(async(req, res)=>{
-    const result= await StudentModel.findOneAndUpdate({"id": req.params.id},
-    req.body, {new:true})
-    res.send(result)
 })
-.delete(async(req, res)=>{
-     const result= await StudentModel.findOneAndRemove({"id": req.params.id})
-     //console.log(result)
-     if(result != null){
-        res.send(result)
-     }
-     else{
-        res.send("No Student with this ID")
-     }
 
- })
 
 
  module.exports= router
