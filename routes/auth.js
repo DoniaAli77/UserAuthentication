@@ -24,8 +24,6 @@ router.route('/register')
     req.body.password = await bcrypt.hash(req.body.password, salt) 
     const newUser= await userModel(req.body).save()
     res.send(newUser)
-    console.log(newPassword)
-
 })
 
 router.route('/login')
