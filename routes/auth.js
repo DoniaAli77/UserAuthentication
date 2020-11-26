@@ -19,8 +19,6 @@ router.route('/register')
         res.send('This email is already signed up')
     }
     const salt= await bcrypt.genSalt(10)
-    console.log(salt)
-    console.log(typeof(salt))
     req.body.password = await bcrypt.hash(req.body.password, salt) 
     const newUser= await userModel(req.body).save()
     res.send(newUser)
@@ -40,7 +38,6 @@ router.route('/login')
     const token= jwt.sign({_id: user._id,
     role: user.role}, process.env.TOKEN_SECRET)
     res.header('auth-token', token).send(token)
-    res.send()
 })
 
 module.exports= router
